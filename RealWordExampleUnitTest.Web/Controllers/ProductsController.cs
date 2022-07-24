@@ -12,12 +12,10 @@ namespace RealWordExampleUnitTest.Web.Controllers
 {
     public class ProductsController : Controller
     {
-        private readonly UnitTestDBContext _context;
         private readonly IRepository<Product> _productRepository;
 
-        public ProductsController(UnitTestDBContext context, IRepository<Product> productRepository)
+        public ProductsController(IRepository<Product> productRepository)
         {
-            _context = context;
             _productRepository = productRepository;
         }
 
@@ -55,14 +53,15 @@ namespace RealWordExampleUnitTest.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ProductName,ProductPrice,ProductStock,ProductColor")] Product product)
+        public async Task<IActionResult> Create(
+            [Bind("Id,ProductName,ProductPrice,ProductStock,ProductColor")] Product product)
         {
             if (ModelState.IsValid)
             {
-
                 await _productRepository.Create(product);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(product);
         }
 
@@ -79,6 +78,7 @@ namespace RealWordExampleUnitTest.Web.Controllers
             {
                 return NotFound();
             }
+
             return View(product);
         }
 
@@ -87,7 +87,8 @@ namespace RealWordExampleUnitTest.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductName,ProductPrice,ProductStock,ProductColor")] Product product)
+        public async Task<IActionResult> Edit(int id,
+            [Bind("Id,ProductName,ProductPrice,ProductStock,ProductColor")] Product product)
         {
             if (id != product.Id)
             {
@@ -111,8 +112,10 @@ namespace RealWordExampleUnitTest.Web.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(product);
         }
 
@@ -145,7 +148,7 @@ namespace RealWordExampleUnitTest.Web.Controllers
 
         private async Task<bool> ProductExists(int id)
         {
-            return await _productRepository.GetById(id)!=null;
+            return await _productRepository.GetById(id) != null;
         }
     }
 }
